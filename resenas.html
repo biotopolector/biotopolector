@@ -17,6 +17,9 @@
   <p id="mensaje"></p>
 </form>
 
+<h2>Lecturas de la comunidad</h2>
+<div id="lista-resenas"></div>
+
 <!-- SUPABASE -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -26,6 +29,34 @@ const client = window.supabase.createClient(
   "sb_publishable_tn5y7SpuaTE6vfoLDoibFQ_o6sUqJ5J"
 );
 
+// 👉 CARGAR RESEÑAS
+async function cargarResenas() {
+  const { data, error } = await client
+    .from("resenas")
+    .select("*")
+    .order("id", { ascending: false });
+
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  const contenedor = document.getElementById("lista-resenas");
+  contenedor.innerHTML = "";
+
+  data.forEach(r => {
+    const div = document.createElement("div");
+    div.innerHTML = `
+      <h3>${r.libro}</h3>
+      <p><strong>${r.autor}</strong></p>
+      <p>${r.contenido}</p>
+      <hr>
+    `;
+    contenedor.appendChild(div);
+  });
+}
+
+// 👉 GUARDAR RESEÑA
 document.getElementById("form-resena").addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -43,8 +74,15 @@ document.getElementById("form-resena").addEventListener("submit", async (e) => {
   } else {
     alert("Reseña guardada ✅");
     document.getElementById("form-resena").reset();
+
+    // 🔥 recargar reseñas automáticamente
+    cargarResenas();
   }
 });
+
+// 👉 cargar al abrir la página
+cargarResenas();
+
 </script>
 
 </body>
