@@ -7,88 +7,85 @@
   <style>
     body {
       font-family: "Georgia", serif;
-      background-color: #f2efe7;
+      background-color: #f3efe6;
       margin: 0;
-      color: #2c2c2c;
+      color: #2a2a2a;
     }
 
     header {
-      background-color: #e8e2d6;
       text-align: center;
-      padding: 30px 20px;
-      border-bottom: 1px solid #ccc;
+      padding: 40px 20px 20px;
     }
 
     header img {
-      width: 140px;
+      width: 100px;
       border-radius: 50%;
-      margin-bottom: 10px;
-    }
-
-    header h1 {
-      margin: 0;
-      font-weight: normal;
     }
 
     nav {
       text-align: center;
-      padding: 10px;
-      background-color: #d6cfc2;
+      background-color: #e7dfcf;
+      padding: 12px;
     }
 
     nav a {
-      margin: 0 10px;
+      margin: 0 15px;
       text-decoration: none;
-      color: #2c2c2c;
+      color: #4f5b4a;
       font-weight: bold;
+    }
+
+    .intro {
+      text-align: center;
+      margin: 40px 20px 10px;
+      font-style: italic;
+      color: #4f5b4a;
+    }
+
+    .sub {
+      text-align: center;
+      margin-bottom: 40px;
+      color: #666;
+      font-size: 14px;
     }
 
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 20px;
-      padding: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 40px;
+      padding: 0 40px 60px;
     }
 
     .libro {
-      background: white;
-      padding: 10px;
-      border-radius: 10px;
       text-align: center;
-      border: 1px solid #e0d8c8;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-      transition: transform 0.2s;
-    }
-
-    .libro:hover {
-      transform: scale(1.03);
     }
 
     .libro img {
       width: 100%;
-      border-radius: 5px;
+      border-radius: 6px;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.08);
+    }
+
+    .libro h3 {
+      margin: 12px 0 5px;
+      font-size: 16px;
+    }
+
+    .libro p {
+      margin: 0;
+      font-size: 14px;
+      color: #666;
     }
 
     .boton {
       display: inline-block;
-      margin-top: 10px;
+      margin-top: 8px;
       padding: 6px 12px;
-      background-color: #6b4f4f;
+      background-color: #6a2e2e;
       color: white;
       text-decoration: none;
-      border-radius: 5px;
-      font-size: 14px;
-    }
-
-    .insta {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: #6b4f4f;
-      color: white;
-      padding: 10px 15px;
-      border-radius: 20px;
-      text-decoration: none;
+      border-radius: 4px;
+      font-size: 13px;
     }
 
   </style>
@@ -98,8 +95,6 @@
 
 <header>
   <img src="imagenes/logo.png">
-  <h1>Biotopo Lector</h1>
-  <p>Catálogo</p>
 </header>
 
 <nav>
@@ -108,27 +103,31 @@
   <a href="contacto.html">Contacto</a>
 </nav>
 
+<div class="intro">
+  libros escogidos desde una lectura personal
+</div>
+
+<div class="sub">
+  clásicos, narrativa y títulos que permanecen
+</div>
+
 <div class="grid">
 
   <div class="libro">
     <img src="imagenes/libro1.jpg">
     <h3>Anna Karenina</h3>
-    <p>León Tolstoi</p>
+    <p>León Tolstói</p>
     <a class="boton" href="https://instagram.com/biotopolector" target="_blank">Reservar</a>
   </div>
 
   <div class="libro">
     <img src="imagenes/libro2.jpg">
     <h3>Guerra y paz</h3>
-    <p>León Tolstoi</p>
+    <p>León Tolstói</p>
     <a class="boton" href="https://instagram.com/biotopolector" target="_blank">Reservar</a>
   </div>
 
 </div>
-
-<a href="https://instagram.com/biotopolector" target="_blank" class="insta">
-  Instagram
-</a>
 
 </body>
 </html>
