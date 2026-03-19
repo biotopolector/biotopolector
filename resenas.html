@@ -14,7 +14,6 @@
   <input type="text" id="autor" placeholder="Autor" required>
   <textarea id="contenido" placeholder="Escribe tu reseña..." required></textarea>
   <button type="submit">Enviar reseña</button>
-  <p id="mensaje"></p>
 </form>
 
 <h2>Lecturas de la comunidad</h2>
@@ -29,20 +28,26 @@ const client = window.supabase.createClient(
   "sb_publishable_tn5y7SpuaTE6vfoLDoibFQ_o6sUqJ5J"
 );
 
-// 👉 CARGAR RESEÑAS
+// 🔽 CARGAR SOLO RESEÑAS APROBADAS
 async function cargarResenas() {
   const { data, error } = await client
     .from("resenas")
     .select("*")
+    .eq("aprobado", true)
     .order("id", { ascending: false });
 
   if (error) {
-    console.error(error);
+    console.error("Error cargando reseñas:", error);
     return;
   }
 
   const contenedor = document.getElementById("lista-resenas");
   contenedor.innerHTML = "";
+
+  if (data.length === 0) {
+    contenedor.innerHTML = "<p>No hay reseñas aprobadas aún.</p>";
+    return;
+  }
 
   data.forEach(r => {
     const div = document.createElement("div");
@@ -56,7 +61,7 @@ async function cargarResenas() {
   });
 }
 
-// 👉 GUARDAR RESEÑA
+// 🔽 GUARDAR RESEÑA (queda como NO aprobada)
 document.getElementById("form-resena").addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -66,21 +71,20 @@ document.getElementById("form-resena").addEventListener("submit", async (e) => {
 
   const { error } = await client
     .from("resenas")
-    .insert([{ libro, autor, contenido }]);
+    .insert([{ libro, autor, contenido }]); // aprobado = false por defecto
 
   if (error) {
-    console.error(error);
+    console.error("Error guardando:", error);
     alert("Error al guardar 😢");
   } else {
-    alert("Reseña guardada ✅");
+    alert("Reseña enviada (pendiente de aprobación) ✅");
     document.getElementById("form-resena").reset();
 
-    // 🔥 recargar reseñas automáticamente
-    cargarResenas();
+    cargarResenas(); // recarga lista
   }
 });
 
-// 👉 cargar al abrir la página
+// 🔽 CARGAR AL INICIO
 cargarResenas();
 
 </script>
