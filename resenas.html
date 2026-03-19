@@ -17,11 +17,11 @@
   <p id="mensaje"></p>
 </form>
 
-<!-- SUPABASE (SOLO UNA VEZ) -->
+<!-- SUPABASE -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
-const supabase = window.supabase.createClient(
+const client = window.supabase.createClient(
   "https://vxodiycdileyqemlcxet.supabase.co",
   "sb_publishable_tn5y7SpuaTE6vfoLDoibFQ_o6sUqJ5J"
 );
@@ -33,7 +33,7 @@ document.getElementById("form-resena").addEventListener("submit", async (e) => {
   const autor = document.getElementById("autor").value;
   const contenido = document.getElementById("contenido").value;
 
-  const { error } = await supabase
+  const { error } = await client
     .from("resenas")
     .insert([{ libro, autor, contenido }]);
 
