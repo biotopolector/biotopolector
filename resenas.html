@@ -1,70 +1,109 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<title>Reseñas - Biotopo Lector</title>
+  <meta charset="UTF-8">
+  <title>Reseñas - Biotopo Lector</title>
 
-<style>
-body {
-    font-family: Georgia, serif;
-    background-color: #f5f1e8;
-    margin: 0;
-    padding: 0;
-}
+  <style>
+    body {
+      font-family: Georgia, serif;
+      background-color: #f4f1ea;
+      margin: 0;
+    }
 
-.contenedor {
-    max-width: 600px;
-    margin: 60px auto;
-    background: white;
-    padding: 30px;
-    border: 1px solid #d6cfc2;
-}
+    header {
+      text-align: center;
+      padding: 20px;
+    }
 
-h1 {
-    text-align: center;
-    margin-bottom: 30px;
-}
+    header img {
+      max-width: 200px;
+    }
 
-input, textarea {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 1px solid #ccc;
-    font-family: Georgia, serif;
-}
+    nav {
+      text-align: center;
+      margin-bottom: 20px;
+    }
 
-button {
-    background-color: #6a2e2e;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    cursor: pointer;
-}
+    nav a {
+      margin: 0 10px;
+      text-decoration: none;
+      color: #6a2e2e;
+      font-weight: bold;
+    }
 
-button:hover {
-    background-color: #4a1f1f;
-}
+    .contenedor {
+      max-width: 500px;
+      margin: 40px auto;
+      background: white;
+      padding: 30px;
+      border: 2px solid #d6cfc2;
+      border-radius: 8px;
+    }
 
-#mensaje {
-    margin-top: 15px;
-    font-size: 14px;
-}
-</style>
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-family: Georgia, serif;
+    }
+
+    button {
+      background-color: #6a2e2e;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #4e1f1f;
+    }
+
+    #mensaje {
+      margin-top: 10px;
+      text-align: center;
+      font-size: 14px;
+    }
+  </style>
 </head>
 
 <body>
 
+<header>
+  <img src="imagenes/logo.png">
+</header>
+
+<nav>
+  <a href="index.html">Inicio</a>
+  <a href="catalogo.html">Catálogo</a>
+  <a href="contacto.html">Contacto</a>
+</nav>
+
 <div class="contenedor">
-    <h1>Dejar una reseña</h1>
+  <h2>Dejar una reseña</h2>
 
-    <form id="form-resena">
-        <input type="text" id="libro" placeholder="Libro" required>
-        <input type="text" id="autor" placeholder="Autor" required>
-        <textarea id="contenido" placeholder="Escribe tu reseña..." required></textarea>
+  <form id="form-resena">
 
-        <button type="submit">Enviar reseña</button>
-        <p id="mensaje"></p>
-    </form>
+    <input type="text" id="libro" placeholder="Nombre del libro" required>
+
+    <input type="text" id="autor" placeholder="Autor" required>
+
+    <textarea id="contenido" placeholder="Escribe tu reseña..." required></textarea>
+
+    <button type="submit">Enviar reseña</button>
+
+    <p id="mensaje"></p>
+
+  </form>
 </div>
 
 <!-- Supabase -->
@@ -80,35 +119,35 @@ const form = document.getElementById("form-resena");
 const mensaje = document.getElementById("mensaje");
 
 form.addEventListener("submit", async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    const libro = document.getElementById("libro").value;
-    const autor = document.getElementById("autor").value;
-    const contenido = document.getElementById("contenido").value;
+  const libro = document.getElementById("libro").value;
+  const autor = document.getElementById("autor").value;
+  const contenido = document.getElementById("contenido").value;
 
-    mensaje.textContent = "Enviando reseña...";
-    mensaje.style.color = "#7a766f";
+  mensaje.textContent = "Enviando reseña...";
+  mensaje.style.color = "#7a766f";
 
-    const { error } = await supabase
-        .from("resenas")
-        .insert([
-            {
-                libro: libro,
-                autor: autor,
-                contenido: contenido,
-                aprobado: false
-            }
-        ]);
+  const { error } = await supabase
+    .from("resenas")
+    .insert([
+      {
+        libro: libro,
+        autor: autor,
+        contenido: contenido,
+        aprobado: false
+      }
+    ]);
 
-    if (error) {
-        mensaje.textContent = "Error al enviar la reseña";
-        mensaje.style.color = "red";
-        console.error(error);
-    } else {
-        mensaje.textContent = "Reseña enviada ✨ (pendiente de aprobación)";
-        mensaje.style.color = "green";
-        form.reset();
-    }
+  if (error) {
+    mensaje.textContent = "Error al enviar 😢";
+    mensaje.style.color = "red";
+    console.error(error);
+  } else {
+    mensaje.textContent = "Reseña enviada ✅ (pendiente aprobación)";
+    mensaje.style.color = "green";
+    form.reset();
+  }
 });
 </script>
 
