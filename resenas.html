@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Reseñas</title>
+</head>
+
+<body>
+
+<h2>Dejar una reseña</h2>
+
+<form id="form-resena">
+  <input type="text" id="libro" placeholder="Nombre del libro" required>
+  <input type="text" id="autor" placeholder="Autor" required>
+  <textarea id="contenido" placeholder="Escribe tu reseña..." required></textarea>
+  <button type="submit">Enviar reseña</button>
+  <p id="mensaje"></p>
+</form>
+
+<!-- SUPABASE (SOLO UNA VEZ) -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+const supabase = window.supabase.createClient(
+  "https://vxodiycdileyqemlcxet.supabase.co",
+  "sb_publishable_tn5y7SpuaTE6vfoLDoibFQ_o6sUqJ5J"
+);
+
+document.getElementById("form-resena").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const libro = document.getElementById("libro").value;
+  const autor = document.getElementById("autor").value;
+  const contenido = document.getElementById("contenido").value;
+
+  const { error } = await supabase
+    .from("resenas")
+    .insert([{ libro, autor, contenido }]);
+
+  if (error) {
+    console.error(error);
+    alert("Error al guardar 😢");
+  } else {
+    alert("Reseña guardada ✅");
+    document.getElementById("form-resena").reset();
+  }
+});
+</script>
+
+</body>
+</html>
