@@ -1,94 +1,94 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Catálogo - Biotopo Lector</title>
+<meta charset="UTF-8">
+<title>Catálogo - Biotopo Lector</title>
 
-  <style>
-    body {
-      font-family: "Georgia", serif;
-      background-color: #f3efe6;
-      margin: 0;
-      color: #2a2a2a;
-    }
+<style>
+body {
+  font-family: Georgia, serif;
+  background-color: #f4f1ea;
+  margin: 0;
+  text-align: center;
+}
 
-    header {
-      text-align: center;
-      padding: 40px 20px 20px;
-    }
+header img {
+  width: 120px;
+  margin-top: 20px;
+}
 
-    header img {
-      width: 100px;
-      border-radius: 50%;
-    }
+nav {
+  margin: 20px;
+}
 
-    nav {
-      text-align: center;
-      background-color: #e7dfcf;
-      padding: 12px;
-    }
+nav a {
+  margin: 0 10px;
+  text-decoration: none;
+  color: #333;
+}
 
-    nav a {
-      margin: 0 15px;
-      text-decoration: none;
-      color: #4f5b4a;
-      font-weight: bold;
-    }
+.intro {
+  margin-top: 20px;
+}
 
-    .intro {
-      text-align: center;
-      margin: 40px 20px 10px;
-      font-style: italic;
-      color: #4f5b4a;
-    }
+.sub {
+  margin-bottom: 30px;
+  color: #666;
+}
 
-    .sub {
-      text-align: center;
-      margin-bottom: 40px;
-      color: #666;
-      font-size: 14px;
-    }
+.grid {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  flex-wrap: wrap;
+}
 
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 40px;
-      padding: 0 40px 60px;
-    }
+.libro {
+  background: #fffdf8;
+  padding: 15px;
+  width: 220px;
+  border: 1px solid #ddd5c7;
+}
 
-    .libro {
-      text-align: center;
-    }
+.libro img {
+  width: 100%;
+}
 
-    .libro img {
-      width: 100%;
-      border-radius: 6px;
-      box-shadow: 0 6px 12px rgba(0,0,0,0.08);
-    }
+.boton {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 6px 12px;
+  background-color: #6e0f1a;
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  font-size: 13px;
+}
 
-    .libro h3 {
-      margin: 12px 0 5px;
-      font-size: 16px;
-    }
+/* RESEÑAS */
+.resenas {
+  margin-top: 15px;
+  text-align: left;
+  font-size: 14px;
+}
 
-    .libro p {
-      margin: 0;
-      font-size: 14px;
-      color: #666;
-    }
+.titulo-resena {
+  font-style: italic;
+  color: #4f5b4a;
+  margin-bottom: 8px;
+}
 
-    .boton {
-      display: inline-block;
-      margin-top: 8px;
-      padding: 6px 12px;
-      background-color: #6a2e2e;
-      color: white;
-      text-decoration: none;
-      border-radius: 4px;
-      font-size: 13px;
-    }
+.resena-item {
+  margin-bottom: 10px;
+  padding-left: 10px;
+  border-left: 2px solid #ddd;
+}
 
-  </style>
+.resena-item span {
+  font-size: 12px;
+  color: #777;
+}
+</style>
 </head>
 
 <body>
@@ -113,21 +113,77 @@
 
 <div class="grid">
 
+  <!-- ANNA KARENINA -->
   <div class="libro">
     <img src="imagenes/libro1.jpg">
     <h3>Anna Karenina</h3>
     <p>León Tolstói</p>
-    <a class="boton" href="https://instagram.com/biotopolector" target="_blank">Reservar</a>
+    <a class="boton" href="#">Consultar</a>
+
+    <div class="resenas" id="resenas-Anna Karenina">
+      <p class="titulo-resena">lecturas de la comunidad</p>
+    </div>
   </div>
 
+  <!-- GUERRA Y PAZ -->
   <div class="libro">
     <img src="imagenes/libro2.jpg">
     <h3>Guerra y paz</h3>
     <p>León Tolstói</p>
-    <a class="boton" href="https://instagram.com/biotopolector" target="_blank">Reservar</a>
+    <a class="boton" href="#">Consultar</a>
+
+    <div class="resenas" id="resenas-Guerra y paz">
+      <p class="titulo-resena">lecturas de la comunidad</p>
+    </div>
   </div>
 
 </div>
+
+<!-- SUPABASE -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+const supabaseUrl = "https://vxodiycdileyqemlcxet.supabase.co";
+const supabaseKey = "sb_publishable_tn5y7SpuaTE6vfoLDoibFQ_o6sUqJ5J";
+
+const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+async function cargarResenas() {
+  const { data, error } = await supabase
+    .from("resenas")
+    .select("*")
+    .eq("aprobado", false);
+
+  if (error) {
+    console.log(error);
+    return;
+  }
+
+  data.forEach(resena => {
+  const nombre = resena.libro.trim().toLowerCase();
+
+  document.querySelectorAll(".libro").forEach(libro => {
+    const titulo = libro.querySelector("h3").textContent.trim().toLowerCase();
+
+    if (titulo === nombre) {
+      const contenedor = libro.querySelector(".resenas");
+
+      const div = document.createElement("div");
+      div.classList.add("resena-item");
+
+      div.innerHTML = `
+        <p>"${resena.contenido}"</p>
+        <span>${resena.autor}</span>
+      `;
+
+      contenedor.appendChild(div);
+    }
+  });
+});
+}
+
+cargarResenas();
+</script>
 
 </body>
 </html>

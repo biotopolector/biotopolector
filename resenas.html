@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Reseñas - Biotopo Lector</title>
+
+<style>
+body {
+    font-family: Georgia, serif;
+    background-color: #f5f1e8;
+    margin: 0;
+    padding: 0;
+}
+
+.contenedor {
+    max-width: 600px;
+    margin: 60px auto;
+    background: white;
+    padding: 30px;
+    border: 1px solid #d6cfc2;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+input, textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    font-family: Georgia, serif;
+}
+
+button {
+    background-color: #6a2e2e;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #4a1f1f;
+}
+
+#mensaje {
+    margin-top: 15px;
+    font-size: 14px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="contenedor">
+    <h1>Dejar una reseña</h1>
+
+    <form id="form-resena">
+        <input type="text" id="libro" placeholder="Libro" required>
+        <input type="text" id="autor" placeholder="Autor" required>
+        <textarea id="contenido" placeholder="Escribe tu reseña..." required></textarea>
+
+        <button type="submit">Enviar reseña</button>
+        <p id="mensaje"></p>
+    </form>
+</div>
+
+<!-- Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+const supabaseUrl = "https://vxodiycdileyqemlcxet.supabase.co";
+const supabaseKey = "sb_publishable_tn5y7SpuaTE6vfoLDoibFQ_o6sUqJ5J";
+
+const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+const form = document.getElementById("form-resena");
+const mensaje = document.getElementById("mensaje");
+
+form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const libro = document.getElementById("libro").value;
+    const autor = document.getElementById("autor").value;
+    const contenido = document.getElementById("contenido").value;
+
+    mensaje.textContent = "Enviando reseña...";
+    mensaje.style.color = "#7a766f";
+
+    const { error } = await supabase
+        .from("resenas")
+        .insert([
+            {
+                libro: libro,
+                autor: autor,
+                contenido: contenido,
+                aprobado: false
+            }
+        ]);
+
+    if (error) {
+        mensaje.textContent = "Error al enviar la reseña";
+        mensaje.style.color = "red";
+        console.error(error);
+    } else {
+        mensaje.textContent = "Reseña enviada ✨ (pendiente de aprobación)";
+        mensaje.style.color = "green";
+        form.reset();
+    }
+});
+</script>
+
+</body>
+</html>
