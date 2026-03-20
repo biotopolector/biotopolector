@@ -7,7 +7,7 @@
   <style>
     body {
       font-family: Georgia, serif;
-      background-color: #f5f1eb;
+      background-color: #f4f1ea;
       color: #2c2c2c;
       margin: 0;
       padding: 20px;
@@ -15,15 +15,23 @@
 
     h1 {
       text-align: center;
+      margin-bottom: 40px;
+      color: #3e2f2f;
     }
 
     .libro {
-      background: #fff;
+      background: #fffdf8;
       padding: 20px;
-      margin: 20px auto;
-      max-width: 600px;
-      border-left: 5px solid #6b1d1d;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      margin: 30px auto;
+      max-width: 650px;
+      border: 1px solid #e0d8c8;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    }
+
+    .portada {
+      width: 120px;
+      display: block;
+      margin-bottom: 10px;
     }
 
     .reseñas-libro {
@@ -34,14 +42,15 @@
 
     .resena {
       background: #f9f6f1;
-      padding: 10px;
+      padding: 12px;
       margin-bottom: 10px;
-      border-left: 3px solid #6b1d1d;
+      border-left: 4px solid #7a2f2f;
     }
 
     .autor {
       font-style: italic;
       color: #555;
+      margin-top: 5px;
     }
   </style>
 </head>
@@ -50,14 +59,20 @@
 
 <h1>Catálogo</h1>
 
+<!-- 📚 LIBRO 1 -->
 <div class="libro">
+  <img src="libro1.jpg" class="portada">
+
   <h2>Anna Karenina</h2>
   <p>León Tolstói</p>
 
   <div class="reseñas-libro" id="resenas-anna"></div>
 </div>
 
+<!-- 📚 LIBRO 2 -->
 <div class="libro">
+  <img src="libro2.jpg" class="portada">
+
   <h2>Guerra y paz</h2>
   <p>León Tolstói</p>
 
@@ -98,7 +113,7 @@ async function cargarResenasPorLibro(nombreLibro, contenedorId) {
     div.classList.add("resena");
 
     div.innerHTML = `
-      <p>"${r.contenido}"</p>
+      <p>${r.contenido}</p>
       <p class="autor">— ${r.autor}</p>
     `;
 
@@ -106,7 +121,7 @@ async function cargarResenasPorLibro(nombreLibro, contenedorId) {
   });
 }
 
-// 🔥 LLAMADAS
+// 🔥 CARGA DE RESEÑAS
 cargarResenasPorLibro("Anna Karenina", "resenas-anna");
 cargarResenasPorLibro("Guerra y paz", "resenas-guerra");
 
