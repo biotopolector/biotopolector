@@ -1,188 +1,115 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<title>Catálogo - Biotopo Lector</title>
+  <meta charset="UTF-8">
+  <title>Catálogo - Biotopo Lector</title>
 
-<style>
-body {
-  font-family: Georgia, serif;
-  background-color: #f4f1ea;
-  margin: 0;
-  text-align: center;
-}
+  <style>
+    body {
+      font-family: Georgia, serif;
+      background-color: #f5f1eb;
+      color: #2c2c2c;
+      margin: 0;
+      padding: 20px;
+    }
 
-header img {
-  width: 120px;
-  margin-top: 20px;
-}
+    h1 {
+      text-align: center;
+    }
 
-nav {
-  margin: 20px;
-}
+    .libro {
+      background: #fff;
+      padding: 20px;
+      margin: 20px auto;
+      max-width: 600px;
+      border-left: 5px solid #6b1d1d;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
 
-nav a {
-  margin: 0 10px;
-  text-decoration: none;
-  color: #333;
-}
+    .reseñas-libro {
+      margin-top: 15px;
+      padding-top: 10px;
+      border-top: 1px solid #ddd;
+    }
 
-.intro {
-  margin-top: 20px;
-}
+    .resena {
+      background: #f9f6f1;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-left: 3px solid #6b1d1d;
+    }
 
-.sub {
-  margin-bottom: 30px;
-  color: #666;
-}
-
-.grid {
-  display: flex;
-  justify-content: center;
-  gap: 40px;
-  flex-wrap: wrap;
-}
-
-.libro {
-  background: #fffdf8;
-  padding: 15px;
-  width: 220px;
-  border: 1px solid #ddd5c7;
-}
-
-.libro img {
-  width: 100%;
-}
-
-.boton {
-  display: inline-block;
-  margin-top: 8px;
-  padding: 6px 12px;
-  background-color: #6e0f1a;
-  color: white;
-  text-decoration: none;
-  border-radius: 4px;
-  font-size: 13px;
-}
-
-/* RESEÑAS */
-.resenas {
-  margin-top: 15px;
-  text-align: left;
-  font-size: 14px;
-}
-
-.titulo-resena {
-  font-style: italic;
-  color: #4f5b4a;
-  margin-bottom: 8px;
-}
-
-.resena-item {
-  margin-bottom: 10px;
-  padding-left: 10px;
-  border-left: 2px solid #ddd;
-}
-
-.resena-item span {
-  font-size: 12px;
-  color: #777;
-}
-</style>
+    .autor {
+      font-style: italic;
+      color: #555;
+    }
+  </style>
 </head>
 
 <body>
 
-<header>
-  <img src="imagenes/logo.png">
-</header>
+<h1>Catálogo</h1>
 
-<nav>
-  <a href="index.html">Inicio</a>
-  <a href="catalogo.html">Catálogo</a>
-  <a href="contacto.html">Contacto</a>
-</nav>
+<div class="libro">
+  <h2>Anna Karenina</h2>
+  <p>León Tolstói</p>
 
-<div class="intro">
-  libros escogidos desde una lectura personal
+  <div class="reseñas-libro" id="resenas-anna"></div>
 </div>
 
-<div class="sub">
-  clásicos, narrativa y títulos que permanecen
-</div>
+<div class="libro">
+  <h2>Guerra y paz</h2>
+  <p>León Tolstói</p>
 
-<div class="grid">
-
-  <!-- ANNA KARENINA -->
-  <div class="libro">
-    <img src="imagenes/libro1.jpg">
-    <h3>Anna Karenina</h3>
-    <p>León Tolstói</p>
-    <a class="boton" href="#">Consultar</a>
-
-    <div class="resenas" id="resenas-Anna Karenina">
-      <p class="titulo-resena">lecturas de la comunidad</p>
-    </div>
-  </div>
-
-  <!-- GUERRA Y PAZ -->
-  <div class="libro">
-    <img src="imagenes/libro2.jpg">
-    <h3>Guerra y paz</h3>
-    <p>León Tolstói</p>
-    <a class="boton" href="#">Consultar</a>
-
-    <div class="resenas" id="resenas-Guerra y paz">
-      <p class="titulo-resena">lecturas de la comunidad</p>
-    </div>
-  </div>
-
+  <div class="reseñas-libro" id="resenas-guerra"></div>
 </div>
 
 <!-- SUPABASE -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
-const supabaseUrl = "https://vxodiycdileyqemlcxet.supabase.co";
-const supabaseKey = "sb_publishable_tn5y7SpuaTE6vfoLDoibFQ_o6sUqJ5J";
+const client = window.supabase.createClient(
+  "https://vxodiycdileyqemlcxet.supabase.co",
+  "sb_publishable_tn5y7SpuaTE6vfoLDoibFQ_o6sUqJ5J"
+);
 
-const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
-
-async function cargarResenas() {
-  const { data, error } = await supabase
+async function cargarResenasPorLibro(nombreLibro, contenedorId) {
+  const { data, error } = await client
     .from("resenas")
     .select("*")
-    .eq("aprobado", false);
+    .eq("aprobado", true)
+    .ilike("libro", `%${nombreLibro}%`);
 
   if (error) {
-    console.log(error);
+    console.error(error);
     return;
   }
 
-  data.forEach(resena => {
-  const nombre = resena.libro.trim().toLowerCase();
+  const contenedor = document.getElementById(contenedorId);
+  contenedor.innerHTML = "";
 
-  document.querySelectorAll(".libro").forEach(libro => {
-    const titulo = libro.querySelector("h3").textContent.trim().toLowerCase();
+  if (data.length === 0) {
+    contenedor.innerHTML = "<p>Sin reseñas aún.</p>";
+    return;
+  }
 
-    if (titulo === nombre) {
-      const contenedor = libro.querySelector(".resenas");
+  data.forEach(r => {
+    const div = document.createElement("div");
+    div.classList.add("resena");
 
-      const div = document.createElement("div");
-      div.classList.add("resena-item");
+    div.innerHTML = `
+      <p>"${r.contenido}"</p>
+      <p class="autor">— ${r.autor}</p>
+    `;
 
-      div.innerHTML = `
-        <p>"${resena.contenido}"</p>
-        <span>${resena.autor}</span>
-      `;
-
-      contenedor.appendChild(div);
-    }
+    contenedor.appendChild(div);
   });
-});
 }
 
-cargarResenas();
+// 🔥 LLAMADAS
+cargarResenasPorLibro("Anna Karenina", "resenas-anna");
+cargarResenasPorLibro("Guerra y paz", "resenas-guerra");
+
 </script>
 
 </body>
