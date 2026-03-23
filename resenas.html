@@ -1,92 +1,72 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Reseñas</title>
+<meta charset="UTF-8">
+<title>Reseñas</title>
+
+<style>
+body {
+  font-family: Georgia;
+  background: #e8e1d5;
+}
+
+.contenedor {
+  max-width: 800px;
+  margin: auto;
+  background: #f5f1ea;
+  padding: 20px;
+}
+
+input, textarea {
+  width: 100%;
+  margin: 10px 0;
+  padding: 8px;
+}
+
+button {
+  background: #6a2e2e;
+  color: white;
+  padding: 10px;
+  border: none;
+}
+</style>
 </head>
 
 <body>
 
-<h2>Dejar una reseña</h2>
+<div class="contenedor">
 
-<form id="form-resena">
-  <input type="text" id="libro" placeholder="Nombre del libro" required>
-  <input type="text" id="autor" placeholder="Autor" required>
-  <textarea id="contenido" placeholder="Escribe tu reseña..." required></textarea>
-  <button type="submit">Enviar reseña</button>
+<h2>Escribir reseña</h2>
+
+<form id="form">
+<input id="libro" placeholder="Libro" required>
+<input id="autor" placeholder="Tu nombre" required>
+<textarea id="contenido" required></textarea>
+<button>Enviar</button>
 </form>
 
-<h2>Lecturas de la comunidad</h2>
-<div id="lista-resenas"></div>
+</div>
 
-<!-- SUPABASE -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
-const client = window.supabase.createClient(
+const c = window.supabase.createClient(
   "https://vxodiycdileyqemlcxet.supabase.co",
   "sb_publishable_tn5y7SpuaTE6vfoLDoibFQ_o6sUqJ5J"
 );
 
-// 🔽 CARGAR SOLO RESEÑAS APROBADAS
-async function cargarResenas() {
-  const { data, error } = await client
-    .from("resenas")
-    .select("*")
-    .eq("aprobado", true)
-    .order("id", { ascending: false });
-
-  if (error) {
-    console.error("Error cargando reseñas:", error);
-    return;
-  }
-
-  const contenedor = document.getElementById("lista-resenas");
-  contenedor.innerHTML = "";
-
-  if (data.length === 0) {
-    contenedor.innerHTML = "<p>No hay reseñas aprobadas aún.</p>";
-    return;
-  }
-
-  data.forEach(r => {
-    const div = document.createElement("div");
-    div.innerHTML = `
-      <h3>${r.libro}</h3>
-      <p><strong>${r.autor}</strong></p>
-      <p>${r.contenido}</p>
-      <hr>
-    `;
-    contenedor.appendChild(div);
-  });
-}
-
-// 🔽 GUARDAR RESEÑA (queda como NO aprobada)
-document.getElementById("form-resena").addEventListener("submit", async (e) => {
+form.onsubmit = async e => {
   e.preventDefault();
 
-  const libro = document.getElementById("libro").value;
-  const autor = document.getElementById("autor").value;
-  const contenido = document.getElementById("contenido").value;
+  await c.from("resenas").insert([{
+    libro: libro.value,
+    autor: autor.value,
+    contenido: contenido.value
+  }]);
 
-  const { error } = await client
-    .from("resenas")
-    .insert([{ libro, autor, contenido }]); // aprobado = false por defecto
-
-  if (error) {
-    console.error("Error guardando:", error);
-    alert("Error al guardar 😢");
-  } else {
-    alert("Reseña enviada (pendiente de aprobación) ✅");
-    document.getElementById("form-resena").reset();
-
-    cargarResenas(); // recarga lista
-  }
-});
-
-// 🔽 CARGAR AL INICIO
-cargarResenas();
-
+  alert("Reseña enviada (pendiente de aprobación)");
+  form.reset();
+};
 </script>
 
 </body>
